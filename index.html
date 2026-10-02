@@ -30,6 +30,8 @@ header.report-header { background:#fff; color:var(--blue); padding:28px 0 24px; 
 header.report-header img { height:34px; display:block; }
 .header-meta { font-size:12.5px; color:var(--slate); text-align:right; }
 .eyebrow-row { max-width:1180px; margin:18px auto 0; padding:0 28px; }
+.video-frame { border:3px solid var(--blue); border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(29,56,83,0.15); line-height:0; }
+.vidyard-player-embed { display:block; }
 .eyebrow { font-size:12.5px; text-transform:uppercase; letter-spacing:.16em; color:var(--red-dark); font-weight:800; margin-bottom:12px; }
 h1.report-title { font-size:clamp(24px,3.2vw,32px); font-weight:800; max-width:860px; line-height:1.2; }
 .report-sub { margin-top:12px; max-width:800px; color:var(--slate); font-size:14.5px; }
@@ -894,5 +896,41 @@ loadTrendSections();
 
 </script>
 
+
+<div id="floating-video-widget" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  z-index: 9999;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+">
+  <button
+    type="button"
+    aria-label="Close video"
+    onclick="this.parentElement.remove()"
+    style="
+      position: absolute;
+      top: -14px;
+      right: -10px;
+      z-index: 2;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      background: #1D3853;
+      color: white;
+      cursor: pointer;
+    "
+  >&times;</button>
+
+  <div class="video-frame">
+    <img style="width:100%;margin:auto;display:block;" class="vidyard-player-embed" src="https://play.vidyard.com/tB1HrC5mnzpuXEy8AApMzx.jpg" data-uuid="tB1HrC5mnzpuXEy8AApMzx" data-v="4" data-type="inline">
+  </div>
+</div>
+<script src="https://play.vidyard.com/embed/v4.js"></script>
 </body>
 </html>
