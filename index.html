@@ -213,6 +213,11 @@ section.block.score-blue .section-head p { color:#AFC0CC; }
 
 /* 90-Day Roadmap — beige section, distinct from the page's default off-white */
 section.block.roadmap-beige { background:var(--beige); }
+.report-nav { background:#fff; border-bottom:1px solid var(--line); }
+.report-nav .wrap { display:flex; gap:6px; flex-wrap:wrap; padding-top:10px; padding-bottom:10px; }
+.report-nav a, .report-nav span { font-size:12.5px; font-weight:700; padding:7px 14px; border-radius:100px; text-decoration:none; color:var(--blue); border:1.5px solid var(--line); }
+.report-nav a:hover { border-color:var(--blue); background:var(--beige); }
+.report-nav .on { background:var(--blue); color:#fff; border-color:var(--blue); }
 </style>
 </head>
 <body>
@@ -229,6 +234,7 @@ section.block.roadmap-beige { background:var(--beige); }
     <div class="legend-row"><div class="legend-item"><span class="swatch" style="background:#4DB859"></span>SpearPoint Marketing (client)</div><div class="legend-item"><span class="swatch" style="background:#8FA6AE"></span>Breaking B2B</div><div class="legend-item"><span class="swatch" style="background:#6E8AA6"></span>TrioSEO</div><div class="legend-item"><span class="swatch" style="background:#1D3853"></span>Flow Agency</div><div class="legend-item"><span class="swatch" style="background:#C7CBB9"></span>Thrive Digital</div></div>
   </div>
 </header>
+<nav class="report-nav"><div class="wrap"><a href="https://spearpoint-seo-b2b.netlify.app/">SEO Dashboard</a><span class="on" aria-current="page">AI Search Dashboard</span><a href="https://spearpoint-cro-website-b2b.netlify.app/">CRO + Website Dashboard</a></div></nav>
 
 <section class="block">
   <div class="wrap">
