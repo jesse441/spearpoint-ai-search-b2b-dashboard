@@ -86,7 +86,7 @@ cards = f'''<div class="ov-grid">
   <h3>AI Search</h3>
   <p class="lead">AI tools are already citing SpearPoint's content, and it holds its own against larger agencies.</p>
   <div class="ov-stats">
-   <div class="ov-stat"><div class="n">64.5<small>/100</small></div><div class="l">AI Search Score, ahead of Breaking B2B and Thrive Digital</div></div>
+   <div class="ov-stat"><div class="n">65.2<small>/100</small></div><div class="l">AI Search Score, ahead of Breaking B2B and Thrive Digital</div></div>
    <div class="ov-stat"><div class="n">72</div><div class="l">Times AI answers linked to SpearPoint</div></div>
   </div>
   <ul class="ov-wins">

@@ -20,7 +20,7 @@ git clone --branch builder-kit --single-branch https://github.com/jesse441/spear
 | `reference/generator/overview_build.py` | Overview generator. Reuses CSS from `cro/index.html`, writes `overview/index.html` (= `overview.html`). |
 | `reference/generator/plan_build.py` | Optional 90-day plan preview page (not deployed; the plan lives on the client spreadsheet). |
 | `reference/generator/parse_serp.py` | Turns SE Ranking SERP results into `serps2.json` (top-10 counts per domain). |
-| `reference/generator/base.css.txt`, `logo1.txt`, `logo2.txt` | Shared CSS and the header / footer logos as data URIs. Replace the logos with the client's. |
+| `reference/generator/base.css.txt`, `logo1.txt`, `logo2.txt` | Shared CSS and SpearPoint's header / footer logos as data URIs. Keep them for every client. |
 | `reference/generator/data/` | SpearPoint's data files, as a format reference for each pull (see below). |
 | `reference/generator/build_notes.md` | SpearPoint's build notes: the template for each client's notes. |
 | `apps-script/swap_rows.gs` | The "90 Day Plan Swap Rows" Apps Script for the plan tab (simple `onEdit` trigger). |
@@ -58,5 +58,9 @@ Copy outputs into the client repo as `seo.html`, `cro.html`, `overview.html`, `a
 
 1. Copy `reference/generator/` to a working folder. Replace `data/` with the client's pulls in the same shapes.
 2. Search each generator for SpearPoint-specific text (brand names, competitor names, priority keywords, takeaway copy, roadmap items) and rewrite it from the client's data. Never leave SpearPoint wording behind: `grep -ri "spearpoint\|breaking b2b\|trioseo\|denver" .` must come back empty except for intended matches.
-3. Swap the logos, brand colors and font in `base.css.txt` / `logo*.txt`.
+3. Keep SpearPoint's logos, colors and font (`base.css.txt`, `logo*.txt`): every report is SpearPoint-branded. The client is brand #1, always green, tagged "Client".
 4. Run the generators in order, copy outputs into the client repo, push to `main`.
+
+## Fixed numbers
+
+AI Search Score = 32% topic citation volume + 22% brand mentions + 18% topic coverage + 18% source coverage + 10% brand reputation (changed from 31% on Nov 23, 2026 so the weights total 100%). Supabase: shared project `rcrpcdorpyexpqvjmesu`, one `<prefix>_ai_search_snapshots` + `<prefix>_ai_search_prompt_snapshots` pair per client.
