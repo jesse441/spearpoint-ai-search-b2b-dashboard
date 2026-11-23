@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex">
+<title>SpearPoint Marketing B2B Dashboards: SEO · AI Search · CRO + Website</title>
+<style>
+html,body{margin:0;padding:0;background:#fff;}
+iframe.dash{display:none;width:100%;border:0;height:100vh;}
+iframe.dash.on{display:block;}
+</style></head><body>
+<iframe class="dash" id="f-overview" title="Overview" data-src="overview.html"></iframe>
+<iframe class="dash" id="f-seo" title="SEO Dashboard" data-src="seo.html"></iframe>
+<iframe class="dash" id="f-ai" title="AI Search Dashboard" data-src="ai-search.html"></iframe>
+<iframe class="dash" id="f-cro" title="CRO + Website Dashboard" data-src="cro.html"></iframe>
+<div id="floating-video-widget" style="
+  display:none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  z-index: 9999;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+">
+  <button
+    type="button"
+    aria-label="Close video"
+    onclick="this.parentElement.remove()"
+    style="
+      position: absolute;
+      top: -14px;
+      right: -10px;
+      z-index: 2;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      background: #1D3853;
+      color: white;
+      cursor: pointer;
+    "
+  >&times;</button>
+
+  <div class="video-frame" style="border-radius:12px;overflow:hidden;">
+    <img style="width:100%;margin:auto;display:block;" class="vidyard-player-embed" src="https://play.vidyard.com/tB1HrC5mnzpuXEy8AApMzx.jpg" data-uuid="tB1HrC5mnzpuXEy8AApMzx" data-v="4" data-type="inline">
+  </div>
+</div>
+<script src="https://play.vidyard.com/embed/v4.js"></script>
+<script>
+var TABS={overview:'Overview',seo:'SEO Dashboard',ai:'AI Search Dashboard',cro:'CRO + Website Dashboard'};
+function fit(f){try{var d=f.contentDocument;if(!d||!d.body)return;f.style.height=Math.max(d.documentElement.scrollHeight,d.body.scrollHeight)+'px';}catch(e){}}
+function watch(f){try{var d=f.contentDocument;fit(f);if(window.ResizeObserver){new ResizeObserver(function(){fit(f)}).observe(d.body);}else{setInterval(function(){fit(f)},1000);}
+  d.addEventListener('click',function(){setTimeout(function(){fit(f)},50)});}catch(e){}}
+function showTab(k,noPush){if(!TABS[k])k='overview';
+  for(var t in TABS){var f=document.getElementById('f-'+t);
+    if(t===k){if(!f.getAttribute('src')){f.addEventListener('load',function(){watch(this)});f.setAttribute('src',f.getAttribute('data-src'));}
+      f.classList.add('on');setTimeout((function(ff){return function(){fit(ff)}})(f),30);}
+    else f.classList.remove('on');}
+  document.title=(k==='overview'?'SpearPoint Marketing · B2B Performance Report':'SpearPoint Marketing · '+TABS[k]);
+  var vw=document.getElementById('floating-video-widget');if(vw)vw.style.display=(k==='ai')?'block':'none';
+  if(!noPush&&location.hash!=='#'+k){history.pushState(null,'','#'+k);}
+  window.scrollTo(0,0);}
+window.addEventListener('popstate',function(){showTab(location.hash.slice(1),true)});
+showTab(location.hash.slice(1)||'overview',true);
+</script></body></html>

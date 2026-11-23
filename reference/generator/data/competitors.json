@@ -1,0 +1,73 @@
+{
+ "SpearPoint Marketing": {
+  "domain": "thespearpoint.com",
+  "dr": 50,
+  "refd": 426,
+  "bl": 1227,
+  "kw": 1055,
+  "traffic": 54,
+  "value": 205.68,
+  "t5": 69,
+  "t10": 19,
+  "t20": 95,
+  "t50": 380,
+  "t100": 567
+ },
+ "Breaking B2B": {
+  "domain": "breakingb2b.com",
+  "dr": 72,
+  "refd": 532,
+  "bl": 1122,
+  "kw": 491,
+  "traffic": 108,
+  "value": 1171.09,
+  "t5": 74,
+  "t10": 28,
+  "t20": 90,
+  "t50": 208,
+  "t100": 203
+ },
+ "Thrive Digital": {
+  "domain": "thrivedigital.com",
+  "dr": 60,
+  "refd": 381,
+  "bl": 1106,
+  "kw": 161,
+  "traffic": 295,
+  "value": 369.46,
+  "t5": 51,
+  "t10": 13,
+  "t20": 23,
+  "t50": 63,
+  "t100": 58,
+  "paid_kw": 515
+ },
+ "TrioSEO": {
+  "domain": "trioseo.com",
+  "dr": 79,
+  "refd": 904,
+  "bl": 1346,
+  "kw": 903,
+  "traffic": 42,
+  "value": 171.05,
+  "t5": 86,
+  "t10": 36,
+  "t20": 63,
+  "t50": 365,
+  "t100": 404
+ },
+ "Flow Agency": {
+  "domain": "flow-agency.com",
+  "dr": 75,
+  "refd": 762,
+  "bl": 2186,
+  "kw": 2115,
+  "traffic": 281,
+  "value": 769.78,
+  "t5": 204,
+  "t10": 126,
+  "t20": 301,
+  "t50": 784,
+  "t100": 894
+ }
+}
