@@ -3,11 +3,21 @@
  * When "Swap for alternative" or "Not Relevant" is chosen and an alternative is picked in
  * "Swap with", the alternative is inserted as a new row directly below, in that section's
  * format. Clearing the pick (or changing the decision) removes that row again.
+ * Blog and guest post rows: "Approve" or "Approve with changes" copies the row (columns that
+ * match the Blog Calendar / Guest Post tab) into the first empty row of that tab, once. Later
+ * edits to an approved row's calendar columns are copied to its calendar row too.
  * Runs as a simple onEdit trigger on the 90 Day Plan tab only. No outside access.
  */
 var PLAN_TAB = 'SpearPoint 90 Day Plan Recommendations';
 var SWAP_HEADER = 'Swap with (alternative)';
 var SWAP_DECISIONS = ['Swap for alternative', 'Not Relevant'];
+var APPROVE_DECISIONS = ['Approve', 'Approve with changes'];
+
+// Calendar tabs fed by approved rows: tab name and how many leading columns match it
+var CALENDARS = {
+  blog:  { tab: 'Blog Calendar', cols: 11 },  // A:K = Month ... Status
+  guest: { tab: 'Guest Post',    cols: 12 }   // A:L = Year ... Publisher
+};
 
 // 1-based columns for each section type
 var LAYOUTS = {
@@ -26,10 +36,66 @@ function onEdit(e) {
   var sec = findSection_(sh, row);
   if (!sec || row <= sec.headerRow) return;
   var L = LAYOUTS[sec.type];
-  if (col !== L.swap && col !== L.dec) return;
+  var cal = CALENDARS[sec.type];
+  var isSwapEdit = (col === L.swap || col === L.dec);
+  var isCalEdit = cal && col <= cal.cols;
+  if (!isSwapEdit && !isCalEdit) return;
   var lock = LockService.getDocumentLock();
   lock.waitLock(15000);
-  try { syncRow_(sh, row, sec.type); } finally { lock.releaseLock(); }
+  try {
+    if (isSwapEdit) syncRow_(sh, row, sec.type);
+    if (cal && col === L.dec) addToCalendar_(sh, row, sec.type);
+    if (isCalEdit) pushCellToCalendar_(sh, row, col, sec.type);
+  } finally { lock.releaseLock(); }
+}
+
+/** Marker kept as a note on column A of the calendar row, so a task is added only once. */
+function calMarker_(id) { return 'Added from ' + PLAN_TAB + ': ' + id; }
+
+function findCalendarRow_(ts, id) {
+  var last = ts.getLastRow();
+  if (last < 1) return 0;
+  var notes = ts.getRange(1, 1, last, 1).getNotes();
+  var m = calMarker_(id);
+  for (var r = 0; r < notes.length; r++) if (notes[r][0] === m) return r + 1;
+  return 0;
+}
+
+/** First row after the last row with anything in A:J (Status in K is pre-filled on blank rows). */
+function nextFreeCalendarRow_(ts) {
+  var last = Math.max(ts.getLastRow(), 2);
+  var v = ts.getRange(2, 1, last - 1, 10).getDisplayValues();
+  var lastFilled = 1;
+  for (var i = 0; i < v.length; i++) if (v[i].join('').trim() !== '') lastFilled = i + 2;
+  var r = lastFilled + 1;
+  if (r > ts.getMaxRows()) ts.insertRowAfter(ts.getMaxRows());
+  return r;
+}
+
+/** Approve / Approve with changes: copy the row into its calendar tab (once). */
+function addToCalendar_(sh, row, type) {
+  var L = LAYOUTS[type], c = CALENDARS[type];
+  var id = sh.getRange(row, L.id).getDisplayValue();
+  var decision = sh.getRange(row, L.dec).getDisplayValue();
+  if (!id || APPROVE_DECISIONS.indexOf(decision) === -1) return;
+  var ts = sh.getParent().getSheetByName(c.tab);
+  if (!ts || findCalendarRow_(ts, id)) return;
+  var target = nextFreeCalendarRow_(ts);
+  sh.getRange(row, 1, 1, c.cols).copyTo(ts.getRange(target, 1, 1, c.cols), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
+  ts.getRange(target, 1).setNote(calMarker_(id));
+}
+
+/** An approved row's calendar column was edited: copy that one cell to its calendar row. */
+function pushCellToCalendar_(sh, row, col, type) {
+  var L = LAYOUTS[type], c = CALENDARS[type];
+  var id = sh.getRange(row, L.id).getDisplayValue();
+  var decision = sh.getRange(row, L.dec).getDisplayValue();
+  if (!id || APPROVE_DECISIONS.indexOf(decision) === -1) return;
+  var ts = sh.getParent().getSheetByName(c.tab);
+  if (!ts) return;
+  var r = findCalendarRow_(ts, id);
+  if (!r) return;
+  sh.getRange(row, col).copyTo(ts.getRange(r, col), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
 }
 
 /** Find the header row above `row` and the section type it belongs to. */
@@ -123,4 +189,31 @@ function extendRules_(sh, origRow) {
     return rule.copy().setRanges(ranges).build();
   });
   if (changed) sh.setConditionalFormatRules(out);
+}
+
+/** Menu: "90 Day Plan > Add approved posts to calendars". Backup for any edit that didn't trigger. */
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('90 Day Plan')
+    .addItem('Add approved posts to calendars', 'syncApprovedToCalendars')
+    .addToUi();
+}
+
+function syncApprovedToCalendars() {
+  var sh = SpreadsheetApp.getActive().getSheetByName(PLAN_TAB);
+  if (!sh) return;
+  var vals = sh.getDataRange().getDisplayValues();
+  var type = null, added = 0;
+  for (var r = 0; r < vals.length; r++) {
+    var v = vals[r];
+    if (v[16] === SWAP_HEADER) { type = 'blog'; continue; }
+    if (v[18] === SWAP_HEADER) { type = 'guest'; continue; }
+    if (v[14] === SWAP_HEADER || (v[0] === 'ID' && v[1] === 'Plan bucket')) { type = null; continue; }
+    if (!type) continue;
+    var L = LAYOUTS[type];
+    if (v[L.id - 1] && APPROVE_DECISIONS.indexOf(v[L.dec - 1]) !== -1) {
+      var ts = sh.getParent().getSheetByName(CALENDARS[type].tab);
+      if (ts && !findCalendarRow_(ts, v[L.id - 1])) { addToCalendar_(sh, r + 1, type); added++; }
+    }
+  }
+  SpreadsheetApp.getActive().toast(added + ' approved post(s) added to the Blog Calendar / Guest Post tabs.');
 }
